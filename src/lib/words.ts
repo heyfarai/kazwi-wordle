@@ -8,7 +8,7 @@ import {
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import queryString from 'query-string'
 
-import { ENABLE_ARCHIVED_GAMES } from '../constants/settings'
+import { ENABLE_ARCHIVED_GAMES, GAME_LOCALE } from '../constants/settings'
 import { NOT_CONTAINED_MESSAGE, WRONG_SPOT_MESSAGE } from '../constants/strings'
 import { VALID_GUESSES } from '../constants/validGuesses'
 import { WORDS } from '../constants/wordlist'
@@ -16,13 +16,15 @@ import { getToday } from './dateutils'
 import { getGuessStatuses } from './statuses'
 
 // 1 January 2022 Game Epoch
-export const firstGameDate = new Date(2022, 0)
+export const firstGameDate = new Date(2023, 0)
 export const periodInDays = 1
+export const LOCALE_WORDS = WORDS[GAME_LOCALE]
+export const LOCALE_VALID_GUESSES = VALID_GUESSES[GAME_LOCALE]
 
 export const isWordInWordList = (word: string) => {
   return (
-    WORDS.includes(localeAwareLowerCase(word)) ||
-    VALID_GUESSES.includes(localeAwareLowerCase(word))
+    LOCALE_WORDS.includes(localeAwareLowerCase(word)) ||
+    LOCALE_VALID_GUESSES.includes(localeAwareLowerCase(word))
   )
 }
 
@@ -123,13 +125,14 @@ export const getWordOfDay = (index: number) => {
     throw new Error('Invalid index')
   }
 
-  return localeAwareUpperCase(WORDS[index % WORDS.length])
+  return localeAwareUpperCase(LOCALE_WORDS[index % LOCALE_WORDS.length])
 }
 
 export const getSolution = (gameDate: Date) => {
   const nextGameDate = getNextGameDate(gameDate)
   const index = getIndex(gameDate)
   const wordOfTheDay = getWordOfDay(index)
+  console.log(index, wordOfTheDay)
   return {
     solution: wordOfTheDay,
     solutionGameDate: gameDate,
