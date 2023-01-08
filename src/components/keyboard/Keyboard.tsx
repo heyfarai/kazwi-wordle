@@ -1,6 +1,8 @@
+import { Trans } from '@lingui/macro'
 import { useEffect } from 'react'
 
-import { DELETE_TEXT, ENTER_TEXT } from '../../constants/strings'
+import { KEYBOARD_LAYOUT } from '../../constants/settings'
+import { DELETE_TEXT } from '../../constants/strings'
 import { getStatuses } from '../../lib/statuses'
 import { localeAwareUpperCase } from '../../lib/words'
 import { Key } from './Key'
@@ -57,7 +59,7 @@ export const Keyboard = ({
   return (
     <div>
       <div className="mb-1 flex justify-center">
-        {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => (
+        {KEYBOARD_LAYOUT.top.map((key) => (
           <Key
             value={key}
             key={key}
@@ -68,7 +70,7 @@ export const Keyboard = ({
         ))}
       </div>
       <div className="mb-1 flex justify-center">
-        {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((key) => (
+        {KEYBOARD_LAYOUT.mid.map((key) => (
           <Key
             value={key}
             key={key}
@@ -80,9 +82,9 @@ export const Keyboard = ({
       </div>
       <div className="flex justify-center">
         <Key width={65.4} value="ENTER" onClick={onClick}>
-          {ENTER_TEXT}
+          <Trans>Enter</Trans>
         </Key>
-        {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
+        {KEYBOARD_LAYOUT.bottom.map((key) => (
           <Key
             value={key}
             key={key}

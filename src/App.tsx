@@ -1,6 +1,8 @@
 import './App.css'
 
 import { ClockIcon } from '@heroicons/react/outline'
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
 import { format } from 'date-fns'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 import { useEffect, useState } from 'react'
@@ -18,6 +20,7 @@ import { Navbar } from './components/navbar/Navbar'
 import {
   DATE_LOCALE,
   DISCOURAGE_INAPP_BROWSERS,
+  GAME_LOCALE,
   LONG_ALERT_TIME_MS,
   MAX_CHALLENGES,
   REVEAL_TIME_MS,
@@ -53,8 +56,11 @@ import {
   solutionGameDate,
   unicodeLength,
 } from './lib/words'
+import { messages } from './locales/sn/messages'
 
-function App() {
+i18n.load(GAME_LOCALE, messages)
+i18n.activate(GAME_LOCALE)
+function App(): JSX.Element {
   const isLatestGame = getIsLatestGame()
   const gameDate = getGameDate()
   const prefersDarkMode = window.matchMedia(
@@ -272,97 +278,101 @@ function App() {
   }
 
   return (
-    <Div100vh>
-      <div className="flex h-full flex-col">
-        <Navbar
-          setIsInfoModalOpen={setIsInfoModalOpen}
-          setIsStatsModalOpen={setIsStatsModalOpen}
-          setIsDatePickerModalOpen={setIsDatePickerModalOpen}
-          setIsSettingsModalOpen={setIsSettingsModalOpen}
-        />
+    <I18nProvider i18n={i18n}>
+      <Div100vh>
+        <div className="flex h-full flex-col">
+          <Navbar
+            setIsInfoModalOpen={setIsInfoModalOpen}
+            setIsStatsModalOpen={setIsStatsModalOpen}
+            setIsDatePickerModalOpen={setIsDatePickerModalOpen}
+            setIsSettingsModalOpen={setIsSettingsModalOpen}
+          />
 
-        {!isLatestGame && (
-          <div className="flex items-center justify-center">
-            <ClockIcon className="h-6 w-6 stroke-gray-600 dark:stroke-gray-300" />
-            <p className="text-base text-gray-600 dark:text-gray-300">
-              {format(gameDate, 'd MMMM yyyy', { locale: DATE_LOCALE })}
-            </p>
-          </div>
-        )}
+          {!isLatestGame && (
+            <div className="flex items-center justify-center">
+              <ClockIcon className="h-6 w-6 stroke-gray-600 dark:stroke-gray-300" />
+              <p className="text-base text-gray-600 dark:text-gray-300">
+                {format(gameDate, 'd MMMM yyyy', { locale: DATE_LOCALE })}
+              </p>
+            </div>
+          )}
 
-        <div className="mx-auto flex w-full grow flex-col px-1 pt-2 pb-8 sm:px-6 md:max-w-7xl lg:px-8 short:pb-2 short:pt-2">
-          <div className="flex grow flex-col justify-center pb-6 short:pb-2">
-            <Grid
+          <div className="mx-auto flex w-full grow flex-col px-1 pt-2 pb-8 sm:px-6 md:max-w-7xl lg:px-8 short:pb-2 short:pt-2">
+            <div className="flex grow flex-col justify-center pb-6 short:pb-2">
+              <Grid
+                solution={solution}
+                guesses={guesses}
+                currentGuess={currentGuess}
+                isRevealing={isRevealing}
+                currentRowClassName={currentRowClass}
+              />
+            </div>
+            <Keyboard
+              onChar={onChar}
+              onDelete={onDelete}
+              onEnter={onEnter}
               solution={solution}
               guesses={guesses}
-              currentGuess={currentGuess}
               isRevealing={isRevealing}
-              currentRowClassName={currentRowClass}
             />
+            <InfoModal
+              isOpen={isInfoModalOpen}
+              handleClose={() => setIsInfoModalOpen(false)}
+            />
+            <StatsModal
+              isOpen={isStatsModalOpen}
+              handleClose={() => setIsStatsModalOpen(false)}
+              solution={solution}
+              guesses={guesses}
+              gameStats={stats}
+              isLatestGame={isLatestGame}
+              isGameLost={isGameLost}
+              isGameWon={isGameWon}
+              handleShareToClipboard={() =>
+                showSuccessAlert(GAME_COPIED_MESSAGE)
+              }
+              handleShareFailure={() =>
+                showErrorAlert(SHARE_FAILURE_TEXT, {
+                  durationMs: LONG_ALERT_TIME_MS,
+                })
+              }
+              handleMigrateStatsButton={() => {
+                setIsStatsModalOpen(false)
+                setIsMigrateStatsModalOpen(true)
+              }}
+              isHardMode={isHardMode}
+              isDarkMode={isDarkMode}
+              isHighContrastMode={isHighContrastMode}
+              numberOfGuessesMade={guesses.length}
+            />
+            <DatePickerModal
+              isOpen={isDatePickerModalOpen}
+              initialDate={solutionGameDate}
+              handleSelectDate={(d) => {
+                setIsDatePickerModalOpen(false)
+                setGameDate(d)
+              }}
+              handleClose={() => setIsDatePickerModalOpen(false)}
+            />
+            <MigrateStatsModal
+              isOpen={isMigrateStatsModalOpen}
+              handleClose={() => setIsMigrateStatsModalOpen(false)}
+            />
+            <SettingsModal
+              isOpen={isSettingsModalOpen}
+              handleClose={() => setIsSettingsModalOpen(false)}
+              isHardMode={isHardMode}
+              handleHardMode={handleHardMode}
+              isDarkMode={isDarkMode}
+              handleDarkMode={handleDarkMode}
+              isHighContrastMode={isHighContrastMode}
+              handleHighContrastMode={handleHighContrastMode}
+            />
+            <AlertContainer />
           </div>
-          <Keyboard
-            onChar={onChar}
-            onDelete={onDelete}
-            onEnter={onEnter}
-            solution={solution}
-            guesses={guesses}
-            isRevealing={isRevealing}
-          />
-          <InfoModal
-            isOpen={isInfoModalOpen}
-            handleClose={() => setIsInfoModalOpen(false)}
-          />
-          <StatsModal
-            isOpen={isStatsModalOpen}
-            handleClose={() => setIsStatsModalOpen(false)}
-            solution={solution}
-            guesses={guesses}
-            gameStats={stats}
-            isLatestGame={isLatestGame}
-            isGameLost={isGameLost}
-            isGameWon={isGameWon}
-            handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
-            handleShareFailure={() =>
-              showErrorAlert(SHARE_FAILURE_TEXT, {
-                durationMs: LONG_ALERT_TIME_MS,
-              })
-            }
-            handleMigrateStatsButton={() => {
-              setIsStatsModalOpen(false)
-              setIsMigrateStatsModalOpen(true)
-            }}
-            isHardMode={isHardMode}
-            isDarkMode={isDarkMode}
-            isHighContrastMode={isHighContrastMode}
-            numberOfGuessesMade={guesses.length}
-          />
-          <DatePickerModal
-            isOpen={isDatePickerModalOpen}
-            initialDate={solutionGameDate}
-            handleSelectDate={(d) => {
-              setIsDatePickerModalOpen(false)
-              setGameDate(d)
-            }}
-            handleClose={() => setIsDatePickerModalOpen(false)}
-          />
-          <MigrateStatsModal
-            isOpen={isMigrateStatsModalOpen}
-            handleClose={() => setIsMigrateStatsModalOpen(false)}
-          />
-          <SettingsModal
-            isOpen={isSettingsModalOpen}
-            handleClose={() => setIsSettingsModalOpen(false)}
-            isHardMode={isHardMode}
-            handleHardMode={handleHardMode}
-            isDarkMode={isDarkMode}
-            handleDarkMode={handleDarkMode}
-            isHighContrastMode={isHighContrastMode}
-            handleHighContrastMode={handleHighContrastMode}
-          />
-          <AlertContainer />
         </div>
-      </div>
-    </Div100vh>
+      </Div100vh>
+    </I18nProvider>
   )
 }
 

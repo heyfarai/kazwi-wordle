@@ -1,9 +1,11 @@
+import { defineMessage } from '@lingui/macro'
+
 export const GAME_TITLE = process.env.REACT_APP_GAME_NAME!
 
-export const WIN_MESSAGES = ['Great Job!', 'Awesome', 'Well done!']
+export const WIN_MESSAGES = ['Wagona!', 'Ndizvozvo!', 'Sekutamba!']
 export const GAME_COPIED_MESSAGE = 'Game copied to clipboard'
-export const NOT_ENOUGH_LETTERS_MESSAGE = 'Not enough letters'
-export const WORD_NOT_FOUND_MESSAGE = 'Word not found'
+export const NOT_ENOUGH_LETTERS_MESSAGE = 'Wedzera mavara'
+export const WORD_NOT_FOUND_MESSAGE = 'Iri harisi izwi'
 export const HARD_MODE_ALERT_MESSAGE =
   'Hard Mode can only be enabled at the start!'
 export const HARD_MODE_DESCRIPTION =
@@ -12,9 +14,9 @@ export const HIGH_CONTRAST_MODE_DESCRIPTION = 'For improved color vision'
 export const CORRECT_WORD_MESSAGE = (solution: string) =>
   `The word was ${solution}`
 export const WRONG_SPOT_MESSAGE = (guess: string, position: number) =>
-  `Must use ${guess} in position ${position}`
+  `Shandisa ${guess} panzvimbo ${position}`
 export const NOT_CONTAINED_MESSAGE = (letter: string) =>
-  `Guess must contain ${letter}`
+  `Unofanira kufembera izwi rina ${letter}`
 export const ENTER_TEXT = 'Enter'
 export const DELETE_TEXT = 'Delete'
 export const STATISTICS_TITLE = 'Statistics'
@@ -33,7 +35,10 @@ export const BEST_STREAK_TEXT = 'Best streak'
 export const DISCOURAGE_INAPP_BROWSER_TEXT =
   "You are using an embedded browser and may experience problems sharing or saving your results. We encourage you rather to use your device's default browser."
 
-export const DATEPICKER_TITLE = 'Choose a past date'
-export const DATEPICKER_CHOOSE_TEXT = 'Choose'
-export const DATEPICKER_TODAY_TEXT = 'today'
-export const ARCHIVE_GAMEDATE_TEXT = 'Game date'
+export const DATEPICKER_TITLE = 'Sarudza zuva rakare'
+export const DATEPICKER_CHOOSE_TEXT = 'Sarudza'
+export const DATEPICKER_TODAY_TEXT = 'nhasi'
+export const ARCHIVE_GAMEDATE_TEXT = 'Zuva rakatambwa'
+export const INSTRUCTIONS_TITLE = defineMessage({
+  message: 'Kazwi kanotambwa sei',
+})
